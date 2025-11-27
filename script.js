@@ -1,5 +1,5 @@
 const API_KEY = '7e2bdcc3e4c7454293c173038252711';
-const BASE_URL = 'http://api.weatherapi.com/v1/forecast.json';
+const BASE_URL = 'https://api.weatherapi.com/v1/forecast.json';
 
 let isFahrenheit = false;  // Default Celsius
 
