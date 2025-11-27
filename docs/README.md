@@ -15,7 +15,7 @@ Một ứng dụng web thời tiết hiện đại với giao diện glassmorphi
 
 ## 🚀 Demo
 
-[![Demo Screenshot](demo.jpeg)](https://tienxdun.github.io/WeatherAPI/)
+[![Demo Screenshot](../assets/demo.jpeg)](https://tienxdun.github.io/WeatherAPI/)
 
 **Xem live demo:** [https://tienxdun.github.io/WeatherAPI/](https://tienxdun.github.io/WeatherAPI/)
 

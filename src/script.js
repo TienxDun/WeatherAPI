@@ -92,7 +92,7 @@ function fetchWeather(query) {
     document.getElementById('forecastResult').innerHTML = '';
     
     const units = isFahrenheit ? 'us' : 'metric';  // us for Fahrenheit, metric for Celsius
-    fetch(`${BASE_URL}?key=${API_KEY}&q=${query}&days=7`)
+    fetch(`${BASE_URL}?key=${API_KEY}&q=${query}&days=7&lang=vi`)
         .then(response => response.json())
         .then(data => {
             // Hide loading
