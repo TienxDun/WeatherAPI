@@ -1,4 +1,4 @@
-const API_KEY = '7e2bdcc3e4c7454293c173038252711';
+const API_KEY = 'YOUR_API_KEY_HERE'; // Thay bằng API key của bạn từ https://www.weatherapi.com/
 const BASE_URL = 'https://api.weatherapi.com/v1/forecast.json';
 
 let isFahrenheit = false;  // Default Celsius

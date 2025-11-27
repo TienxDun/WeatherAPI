@@ -25,11 +25,17 @@ Một ứng dụng web thời tiết hiện đại với giao diện glassmorphi
    cd WeatherAPI
    ```
 
-2. **Mở file `script.js` và thay thế `API_KEY`:**
-   ```javascript
-   const API_KEY = 'your_api_key_here';
-   ```
-   Lấy API key miễn phí từ [WeatherAPI.com](https://www.weatherapi.com/).
+2. **Lấy API Key miễn phí:**
+   - Đăng ký tại [WeatherAPI.com](https://www.weatherapi.com/).
+   - Sao chép API Key từ dashboard.
+
+3. **Thay thế API Key trong code:**
+   - Mở file `script.js`.
+   - Thay `'YOUR_API_KEY_HERE'` bằng API Key thực tế của bạn:
+     ```javascript
+     const API_KEY = 'your_actual_api_key';
+     ```
+   **Quan trọng:** Không commit API Key thật lên GitHub để tránh rủi ro bảo mật!
 
 3. **Chạy server local:**
    - Sử dụng Python (nếu có):
