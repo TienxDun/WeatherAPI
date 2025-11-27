@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="glass-container">
+        <header class="app-header">
+            <h1>🌤️ Ứng dụng Thời tiết</h1>
+        </header>
+        
+        <div class="search-section">
+            <input type="text" id="cityInput" placeholder="Nhập tên thành phố..." class="glass-input">
+            <button id="getWeatherBtn" class="liquid-btn">Lấy thời tiết</button>
+            <button id="getLocationBtn" class="liquid-btn">📍 Vị trí của tôi</button>
+        </div>
+        
+        <div class="settings-section">
+            <label class="toggle">
+                <input type="checkbox" id="unitToggle">
+                <span class="slider"></span>
+                <span class="toggle-text">°F</span>
+            </label>
+        </div>
+        
+        <div class="results-section">
+            <div id="loading" class="loading">Đang tải...</div>
+            <div id="weatherResult" class="weather-card"></div>
+            <div id="forecastResult" class="forecast-card"></div>
+        </div>
+        
+        <div class="sidebar-section">
+            <div class="theme-section">
+                <h4>🎨 Chọn chủ đề</h4>
+                <div class="theme-selector">
+                    <input type="radio" id="theme-blue" name="theme" value="blue">
+                    <label for="theme-blue" class="theme-option" data-theme="blue" title="Xanh đại dương"></label>
+                    
+                    <input type="radio" id="theme-pink" name="theme" value="pink">
+                    <label for="theme-pink" class="theme-option" data-theme="pink" title="Hồng đào"></label>
+                    
+                    <input type="radio" id="theme-green" name="theme" value="green" checked>
+                    <label for="theme-green" class="theme-option" data-theme="green" title="Xanh rừng"></label>
+                    
+                    <input type="radio" id="theme-dark" name="theme" value="dark">
+                    <label for="theme-dark" class="theme-option" data-theme="dark" title="Tối mịn"></label>
+                </div>
+            </div>
+            <div id="history" class="history-section">
+                <h4>📚 Lịch sử tìm kiếm</h4>
+                <div class="history"></div>
+            </div>
+        </div>
+    </div>
+    <div id="toast" class="toast"></div>
+    <script src="script.js"></script>
+</body>
+</html>
