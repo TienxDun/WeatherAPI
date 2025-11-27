@@ -15,7 +15,7 @@ Một ứng dụng web thời tiết hiện đại với giao diện glassmorphi
 
 ## 🚀 Demo
 
-![Demo Screenshot](demo.png) <!-- Thay bằng ảnh thực tế nếu có -->
+![Demo Screenshot](demo.jpeg)
 
 ## 🛠️ Cài đặt
 
