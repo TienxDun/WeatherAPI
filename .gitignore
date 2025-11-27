@@ -1,4 +1,5 @@
 # Config files with sensitive data
+config.js
 
 # Node modules (if any)
 node_modules/
