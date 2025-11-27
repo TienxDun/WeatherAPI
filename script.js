@@ -1,5 +1,7 @@
-const API_KEY = 'YOUR_API_KEY_HERE'; // Thay bằng API key của bạn từ https://www.weatherapi.com/
-const BASE_URL = 'https://api.weatherapi.com/v1/forecast.json';
+import CONFIG from './config.js';
+
+const API_KEY = CONFIG.API_KEY;
+const BASE_URL = CONFIG.BASE_URL;
 
 let isFahrenheit = false;  // Default Celsius
 
@@ -82,71 +84,6 @@ document.getElementById('getLocationBtn').addEventListener('click', () => {
         showToast('Trình duyệt không hỗ trợ geolocation.', 'error');
     }
 });
-
-function fetchWeather(query) {
-    const city = document.getElementById('cityInput').value;
-    if (!city) return alert('Vui lòng nhập tên thành phố!');
-    
-    // Show loading
-    document.getElementById('loading').style.display = 'block';
-    document.getElementById('weatherResult').innerHTML = '';
-    document.getElementById('forecastResult').innerHTML = '';
-    
-    fetch(`${BASE_URL}?key=${API_KEY}&q=${city}&days=7`)
-        .then(response => response.json())
-        .then(data => {
-            // Hide loading
-            document.getElementById('loading').style.display = 'none';
-            console.log('API Response:', data);  // Debug: log data trả về
-            if (data.location && data.current) {
-                const temp = data.current.temp_c;
-                const description = data.current.condition.text;
-                const humidity = data.current.humidity;
-                const icon = `https:${data.current.condition.icon}`;  // Icon URL from API
-                document.getElementById('weatherResult').innerHTML = `
-                    <h2>${data.location.name}, ${data.location.country}</h2>
-                    <img src="${icon}" alt="Icon">
-                    <p>Nhiệt độ: ${temp}°C</p>
-                    <p>Mô tả: ${description}</p>
-                    <p>Độ ẩm: ${humidity}%</p>
-                `;
-                
-                // Hiển thị forecast
-                if (data.forecast && data.forecast.forecastday) {
-                    let forecastHTML = '<h3>Dự báo 7 ngày</h3><div class="forecast-container">';
-                    data.forecast.forecastday.forEach(day => {
-                        const date = new Date(day.date).toLocaleDateString('vi-VN');
-                        const maxTemp = day.day.maxtemp_c;
-                        const minTemp = day.day.mintemp_c;
-                        const condition = day.day.condition.text;
-                        const dayIcon = `https:${day.day.condition.icon}`;
-                        forecastHTML += `
-                            <div class="forecast-day">
-                                <p>${date}</p>
-                                <img src="${dayIcon}" alt="Icon">
-                                <p>${maxTemp}°C / ${minTemp}°C</p>
-                                <p>${condition}</p>
-                            </div>
-                        `;
-                    });
-                    forecastHTML += '</div>';
-                    document.getElementById('forecastResult').innerHTML = forecastHTML;
-                }
-                showToast('Đã tải thời tiết thành công!', 'success');
-            } else {
-                document.getElementById('weatherResult').innerHTML = '<p>Không tìm thấy thành phố hoặc lỗi API!</p>';
-                document.getElementById('forecastResult').innerHTML = '';
-                showToast('Không tìm thấy thành phố!', 'error');
-            }
-        })
-        .catch(error => {
-            // Hide loading
-            document.getElementById('loading').style.display = 'none';
-            console.error(error);
-            document.getElementById('weatherResult').innerHTML = '<p>Lỗi mạng hoặc API!</p>';
-            showToast('Lỗi mạng! Vui lòng thử lại.', 'error');
-        });
-};
 
 function fetchWeather(query) {
     // Show loading

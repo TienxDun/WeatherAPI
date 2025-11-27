@@ -31,13 +31,18 @@ Một ứng dụng web thời tiết hiện đại với giao diện glassmorphi
    - Đăng ký tại [WeatherAPI.com](https://www.weatherapi.com/).
    - Sao chép API Key từ dashboard.
 
-3. **Thay thế API Key trong code:**
-   - Mở file `script.js`.
-   - Thay `'YOUR_API_KEY_HERE'` bằng API Key thực tế của bạn:
+3. **Tạo file config.js:**
+   - Tạo file `config.js` trong thư mục dự án.
+   - Thêm nội dung sau và thay `'YOUR_API_KEY_HERE'` bằng API Key thực tế:
      ```javascript
-     const API_KEY = 'your_actual_api_key';
+     const CONFIG = {
+         API_KEY: 'your_actual_api_key',
+         BASE_URL: 'https://api.weatherapi.com/v1/forecast.json'
+     };
+     
+     export default CONFIG;
      ```
-   **Quan trọng:** Không commit API Key thật lên GitHub để tránh rủi ro bảo mật!
+   **Quan trọng:** File `config.js` đã được thêm vào `.gitignore` để không commit lên GitHub!
 
 3. **Chạy server local:**
    - Sử dụng Python (nếu có):

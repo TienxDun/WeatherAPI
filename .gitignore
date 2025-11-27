@@ -1,0 +1,12 @@
+# Config files with sensitive data
+config.js
+
+# Node modules (if any)
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
