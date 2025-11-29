@@ -3,7 +3,11 @@ import CONFIG from './config.js';
 const API_KEY = CONFIG.API_KEY;
 const BASE_URL = CONFIG.BASE_URL;
 
-let isFahrenheit = false;  // Default Celsius
+// Load unit preference from localStorage
+let isFahrenheit = JSON.parse(localStorage.getItem('weatherUnit')) || false;  // Default Celsius
+
+// Store current weather data
+let currentWeatherData = null;
 
 // Load history from localStorage
 let searchHistory = JSON.parse(localStorage.getItem('weatherHistory')) || [];
@@ -62,13 +66,21 @@ document.querySelectorAll('input[name="theme"]').forEach(radio => {
 
 document.getElementById('unitToggle').addEventListener('change', (e) => {
     isFahrenheit = e.target.checked;
-    // Re-fetch if there's current data
-    const currentQuery = document.getElementById('cityInput').value || 'London';  // Default if empty
-    fetchWeather(currentQuery);
+    localStorage.setItem('weatherUnit', JSON.stringify(isFahrenheit));
+    // Update display if we have current data
+    if (currentWeatherData) {
+        updateWeatherDisplay(currentWeatherData);
+    } else {
+        // If no data, fetch default location
+        fetchWeather('Ho Chi Minh');
+    }
 });
 
 // Load history on page load
 updateHistoryDisplay();
+
+// Set toggle state based on saved preference
+document.getElementById('unitToggle').checked = isFahrenheit;
 
 document.getElementById('getLocationBtn').addEventListener('click', () => {
     if (navigator.geolocation) {
@@ -85,6 +97,45 @@ document.getElementById('getLocationBtn').addEventListener('click', () => {
     }
 });
 
+// Function to update weather display without API call
+function updateWeatherDisplay(data) {
+    const temp = isFahrenheit ? data.current.temp_f : data.current.temp_c;
+    const unit = isFahrenheit ? '°F' : '°C';
+    const description = data.current.condition.text;
+    const humidity = data.current.humidity;
+    const icon = `https:${data.current.condition.icon}`;
+    
+    document.getElementById('weatherResult').innerHTML = `
+        <h2>${data.location.name}, ${data.location.country}</h2>
+        <img src="${icon}" alt="Icon">
+        <p>Nhiệt độ: ${temp}${unit}</p>
+        <p>Mô tả: ${description}</p>
+        <p>Độ ẩm: ${humidity}%</p>
+    `;
+    
+    // Update forecast
+    if (data.forecast && data.forecast.forecastday) {
+        let forecastHTML = '<h3>Dự báo 7 ngày</h3><div class="forecast-container">';
+        data.forecast.forecastday.forEach(day => {
+            const date = new Date(day.date).toLocaleDateString('vi-VN');
+            const maxTemp = isFahrenheit ? day.day.maxtemp_f : day.day.maxtemp_c;
+            const minTemp = isFahrenheit ? day.day.mintemp_f : day.day.mintemp_c;
+            const condition = day.day.condition.text;
+            const dayIcon = `https:${day.day.condition.icon}`;
+            forecastHTML += `
+                <div class="forecast-day">
+                    <p>${date}</p>
+                    <img src="${dayIcon}" alt="Icon">
+                    <p>${maxTemp}${unit} / ${minTemp}${unit}</p>
+                    <p>${condition}</p>
+                </div>
+            `;
+        });
+        forecastHTML += '</div>';
+        document.getElementById('forecastResult').innerHTML = forecastHTML;
+    }
+}
+
 function fetchWeather(query) {
     // Show loading
     document.getElementById('loading').style.display = 'block';
@@ -99,40 +150,12 @@ function fetchWeather(query) {
             document.getElementById('loading').style.display = 'none';
             console.log('API Response:', data);  // Debug: log data trả về
             if (data.location && data.current) {
-                const temp = isFahrenheit ? data.current.temp_f : data.current.temp_c;
-                const unit = isFahrenheit ? '°F' : '°C';
-                const description = data.current.condition.text;
-                const humidity = data.current.humidity;
-                const icon = `https:${data.current.condition.icon}`;
-                document.getElementById('weatherResult').innerHTML = `
-                    <h2>${data.location.name}, ${data.location.country}</h2>
-                    <img src="${icon}" alt="Icon">
-                    <p>Nhiệt độ: ${temp}${unit}</p>
-                    <p>Mô tả: ${description}</p>
-                    <p>Độ ẩm: ${humidity}%</p>
-                `;
+                // Store current data
+                currentWeatherData = data;
                 
-                // Hiển thị forecast
-                if (data.forecast && data.forecast.forecastday) {
-                    let forecastHTML = '<h3>Dự báo 7 ngày</h3><div class="forecast-container">';
-                    data.forecast.forecastday.forEach(day => {
-                        const date = new Date(day.date).toLocaleDateString('vi-VN');
-                        const maxTemp = isFahrenheit ? day.day.maxtemp_f : day.day.maxtemp_c;
-                        const minTemp = isFahrenheit ? day.day.mintemp_f : day.day.mintemp_c;
-                        const condition = day.day.condition.text;
-                        const dayIcon = `https:${day.day.condition.icon}`;
-                        forecastHTML += `
-                            <div class="forecast-day">
-                                <p>${date}</p>
-                                <img src="${dayIcon}" alt="Icon">
-                                <p>${maxTemp}${unit} / ${minTemp}${unit}</p>
-                                <p>${condition}</p>
-                            </div>
-                        `;
-                    });
-                    forecastHTML += '</div>';
-                    document.getElementById('forecastResult').innerHTML = forecastHTML;
-                }
+                // Update display
+                updateWeatherDisplay(data);
+                
                 showToast('Đã tải thời tiết thành công!', 'success');
                 // Save to history if it's a city name (not lat,lon)
                 if (!query.includes(',')) saveToHistory(query);

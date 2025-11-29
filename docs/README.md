@@ -53,7 +53,7 @@ Một ứng dụng web thời tiết hiện đại với giao diện glassmorphi
 
 4. **Truy cập:** Mở `http://localhost:8000` trong trình duyệt.
 
-## 📖 Cách sử dụng
+## � Cách sử dụng
 
 1. Nhập tên thành phố vào ô tìm kiếm.
 2. Nhấn Enter hoặc click "Lấy thời tiết".

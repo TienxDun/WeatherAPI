@@ -34,6 +34,15 @@ body {
     gap: 30px;
     position: relative;
     overflow: hidden;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    transition: all 0.5s ease;
+    animation: containerFloat 6s ease-in-out infinite;
+}
+
+@keyframes containerFloat {
+    0%, 100% { transform: translateY(0px) rotateX(0deg); }
+    50% { transform: translateY(-10px) rotateX(1deg); }
 }
 
 .glass-container::before {
@@ -48,10 +57,19 @@ body {
     border-radius: 20px;
 }
 
+.glass-container:hover {
+    transform: translateY(-5px) rotateX(2deg) rotateY(2deg);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                0 0 40px rgba(255, 255, 255, 0.1);
+}
+
 .app-header {
     text-align: center;
     position: relative;
     z-index: 1;
+    transform: translateZ(50px);
 }
 
 .app-header h1 {
@@ -63,6 +81,13 @@ body {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+    animation: glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    0% { filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3)); }
+    100% { filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.6)); }
 }
 
 .search-section {
@@ -87,6 +112,8 @@ body {
     font-size: 1rem;
     outline: none;
     transition: all 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1),
+                0 0 20px rgba(255, 255, 255, 0.1);
 }
 
 .glass-input::placeholder {
@@ -96,7 +123,11 @@ body {
 .glass-input:focus {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1),
+                0 0 30px rgba(255, 255, 255, 0.3),
+                0 0 60px rgba(255, 255, 255, 0.2),
+                0 0 100px rgba(255, 255, 255, 0.1);
+    transform: scale(1.02) translateZ(10px);
 }
 
 .liquid-btn {
@@ -131,9 +162,11 @@ body {
 }
 
 .liquid-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.2) 100%);
+    transform: translateY(-3px) rotateX(5deg) scale(1.05);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3),
+                0 0 60px rgba(255, 255, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.3) 100%);
 }
 
 .settings-section {
@@ -208,13 +241,33 @@ input:checked + .slider:before {
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
     transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.weather-card::before, .forecast-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.6s;
+}
+
+.weather-card:hover::before, .forecast-card:hover::before {
+    left: 100%;
 }
 
 .weather-card:hover, .forecast-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px) rotateX(5deg);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2),
+                0 0 60px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
     background: rgba(255, 255, 255, 0.15);
 }
 
@@ -274,8 +327,28 @@ input:checked + .slider:before {
     border: 3px solid transparent;
     display: inline-block;
     position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.theme-option:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2),
+                0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.theme-selector input[type="radio"]:checked + .theme-option {
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5),
+                0 4px 12px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(255, 255, 255, 0.3);
+    animation: selectedPulse 0.6s ease-out;
+}
+
+@keyframes selectedPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
 
 .theme-option[data-theme="blue"] {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -291,17 +364,6 @@ input:checked + .slider:before {
 
 .theme-option[data-theme="dark"] {
     background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-}
-
-
-.theme-option:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.theme-selector input[type="radio"]:checked + .theme-option {
-    border-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .history {
