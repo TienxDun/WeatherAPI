@@ -526,7 +526,7 @@ body.light {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 20px;
-    justify-items: center;
+    /* justify-items: center; Removed to allow items to stretch */
 }
 
 .forecast-day {
@@ -538,6 +538,11 @@ body.light {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     text-align: center;
     transition: all 0.3s ease;
+    height: 100%; /* Ensure full height */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .forecast-day:hover {
