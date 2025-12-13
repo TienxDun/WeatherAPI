@@ -1,7 +1,7 @@
 import CONFIG from './config.js';
 
 const API_KEY = CONFIG.API_KEY;
-const BASE_URL = CONFIG.BASE_URL;
+const BASE_URL = CONFIG.BASE_URL; // Should be https://api.weatherapi.com/v1/forecast.json
 
 // Load unit preference from localStorage
 let isFahrenheit = JSON.parse(localStorage.getItem('weatherUnit')) || false;  // Default Celsius
@@ -97,7 +97,7 @@ document.getElementById('getLocationBtn').addEventListener('click', () => {
     }
 });
 
-// Function to update weather display without API call
+// Function to update weather display
 function updateWeatherDisplay(data) {
     const temp = isFahrenheit ? data.current.temp_f : data.current.temp_c;
     const unit = isFahrenheit ? '°F' : '°C';
@@ -105,17 +105,82 @@ function updateWeatherDisplay(data) {
     const humidity = data.current.humidity;
     const icon = `https:${data.current.condition.icon}`;
     
+    // Main Weather Card
     document.getElementById('weatherResult').innerHTML = `
         <h2>${data.location.name}, ${data.location.country}</h2>
         <img src="${icon}" alt="Icon">
-        <p>Nhiệt độ: ${temp}${unit}</p>
+        <p>Nhiệt độ: ${Math.round(temp)}${unit}</p>
         <p>Mô tả: ${description}</p>
         <p>Độ ẩm: ${humidity}%</p>
+        <p>Cập nhật: ${data.current.last_updated}</p>
     `;
+
+    // Extra Info (AQI, Astro, UV)
+    let extraInfoHTML = '';
+    
+    // AQI
+    if (data.current.air_quality) {
+        const aqi = data.current.air_quality['us-epa-index'];
+        let aqiText = 'Tốt';
+        if (aqi > 1) aqiText = 'Trung bình';
+        if (aqi > 2) aqiText = 'Kém';
+        if (aqi > 3) aqiText = 'Xấu';
+        if (aqi > 4) aqiText = 'Rất xấu';
+        if (aqi > 5) aqiText = 'Nguy hại';
+        
+        extraInfoHTML += `
+            <div class="info-card">
+                <h4>Chất lượng không khí</h4>
+                <p>Chỉ số EPA: ${aqi}</p>
+                <p>Đánh giá: ${aqiText}</p>
+                <p>PM2.5: ${data.current.air_quality.pm2_5.toFixed(1)}</p>
+            </div>
+        `;
+    }
+
+    // Astronomy (from first forecast day)
+    if (data.forecast && data.forecast.forecastday && data.forecast.forecastday.length > 0) {
+        const astro = data.forecast.forecastday[0].astro;
+        extraInfoHTML += `
+            <div class="info-card">
+                <h4>Thiên văn</h4>
+                <p>🌅 Bình minh: ${astro.sunrise}</p>
+                <p>🌇 Hoàng hôn: ${astro.sunset}</p>
+                <p>🌑 Mặt trăng: ${astro.moon_phase}</p>
+            </div>
+        `;
+    }
+
+    // UV Index
+    extraInfoHTML += `
+        <div class="info-card">
+            <h4>Chỉ số UV</h4>
+            <p>${data.current.uv}</p>
+            <p>${data.current.uv > 5 ? 'Cao - Cần bảo vệ' : 'Thấp/Trung bình'}</p>
+        </div>
+    `;
+
+    document.getElementById('extraInfo').innerHTML = extraInfoHTML;
+
+    // Alerts
+    const alertsDiv = document.getElementById('alertsResult');
+    if (data.alerts && data.alerts.alert && data.alerts.alert.length > 0) {
+        alertsDiv.innerHTML = '<h3>⚠️ Cảnh báo thời tiết</h3>' + data.alerts.alert.map(alert => `
+            <div class="alert-item">
+                <h4>${alert.event}</h4>
+                <p>${alert.desc}</p>
+                <p><small>Hiệu lực: ${new Date(alert.effective).toLocaleString()} - ${new Date(alert.expires).toLocaleString()}</small></p>
+            </div>
+        `).join('');
+        alertsDiv.style.display = 'block';
+    } else {
+        alertsDiv.innerHTML = '';
+        alertsDiv.style.display = 'none';
+    }
     
     // Update forecast
     if (data.forecast && data.forecast.forecastday) {
-        let forecastHTML = '<h3>Dự báo 7 ngày</h3><div class="forecast-container">';
+        let forecastHTML = '<h3>Dự báo thời tiết</h3><div class="forecast-container">';
         data.forecast.forecastday.forEach(day => {
             const date = new Date(day.date).toLocaleDateString('vi-VN');
             const maxTemp = isFahrenheit ? day.day.maxtemp_f : day.day.maxtemp_c;
@@ -126,8 +191,9 @@ function updateWeatherDisplay(data) {
                 <div class="forecast-day">
                     <p>${date}</p>
                     <img src="${dayIcon}" alt="Icon">
-                    <p>${maxTemp}${unit} / ${minTemp}${unit}</p>
+                    <p>${Math.round(maxTemp)}${unit} / ${Math.round(minTemp)}${unit}</p>
                     <p>${condition}</p>
+                    <p>☔ ${day.day.daily_chance_of_rain}%</p>
                 </div>
             `;
         });
@@ -141,14 +207,22 @@ function fetchWeather(query) {
     document.getElementById('loading').style.display = 'block';
     document.getElementById('weatherResult').innerHTML = '';
     document.getElementById('forecastResult').innerHTML = '';
+    document.getElementById('extraInfo').innerHTML = '';
+    document.getElementById('alertsResult').innerHTML = '';
     
-    const units = isFahrenheit ? 'us' : 'metric';  // us for Fahrenheit, metric for Celsius
-    fetch(`${BASE_URL}?key=${API_KEY}&q=${query}&days=7&lang=vi`)
+    // Use WeatherAPI.com endpoint
+    // Request 7 days (might be limited to 3 on free plan), AQI, and Alerts
+    fetch(`${BASE_URL}?key=${API_KEY}&q=${query}&days=7&aqi=yes&alerts=yes&lang=vi`)
         .then(response => response.json())
         .then(data => {
             // Hide loading
             document.getElementById('loading').style.display = 'none';
-            console.log('API Response:', data);  // Debug: log data trả về
+            console.log('API Response:', data);
+            
+            if (data.error) {
+                throw new Error(data.error.message);
+            }
+
             if (data.location && data.current) {
                 // Store current data
                 currentWeatherData = data;
@@ -158,19 +232,15 @@ function fetchWeather(query) {
                 
                 showToast('Đã tải thời tiết thành công!', 'success');
                 // Save to history if it's a city name (not lat,lon)
-                if (!query.includes(',')) saveToHistory(query);
-            } else {
-                document.getElementById('weatherResult').innerHTML = '<p>Không tìm thấy vị trí hoặc lỗi API!</p>';
-                document.getElementById('forecastResult').innerHTML = '';
-                showToast('Không tìm thấy vị trí!', 'error');
+                if (!query.includes(',')) saveToHistory(data.location.name);
             }
         })
         .catch(error => {
             // Hide loading
             document.getElementById('loading').style.display = 'none';
             console.error(error);
-            document.getElementById('weatherResult').innerHTML = '<p>Lỗi mạng hoặc API!</p>';
-            showToast('Lỗi mạng! Vui lòng thử lại.', 'error');
+            document.getElementById('weatherResult').innerHTML = `<p>Lỗi: ${error.message || 'Không thể tải dữ liệu'}</p>`;
+            showToast('Lỗi mạng hoặc API!', 'error');
         });
 }
 
@@ -187,3 +257,6 @@ document.getElementById('cityInput').addEventListener('keypress', (e) => {
         fetchWeather(city);
     }
 });
+
+// Make fetchWeather globally available for history buttons
+window.fetchWeather = fetchWeather;
