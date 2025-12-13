@@ -27,10 +27,22 @@
             </label>
         </div>
         
-        <div class="results-section">
-            <div id="loading" class="loading">Đang tải...</div>
-            <div id="weatherResult" class="weather-card"></div>
-            <div id="extraInfo" class="extra-info-grid"></div>
+        <!-- Initial State -->
+        <div id="welcomeState" class="welcome-state">
+            <div class="welcome-icon">🌤️</div>
+            <h2>Chào mừng bạn đến với Weather App</h2>
+            <p>Nhập tên thành phố hoặc sử dụng vị trí của bạn để bắt đầu.</p>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading" class="loading" style="display: none;">Đang tải dữ liệu...</div>
+
+        <!-- Results State -->
+        <div id="resultsSection" class="results-section" style="display: none;">
+            <div class="weather-main-grid">
+                <div id="weatherResult" class="weather-card"></div>
+                <div id="extraInfo" class="extra-info-grid"></div>
+            </div>
             <div id="alertsResult" class="alerts-card"></div>
             <div id="forecastResult" class="forecast-card"></div>
         </div>

@@ -203,8 +203,12 @@ function updateWeatherDisplay(data) {
 }
 
 function fetchWeather(query) {
-    // Show loading
+    // Show loading, hide others
     document.getElementById('loading').style.display = 'block';
+    document.getElementById('welcomeState').style.display = 'none';
+    document.getElementById('resultsSection').style.display = 'none';
+    
+    // Clear previous results
     document.getElementById('weatherResult').innerHTML = '';
     document.getElementById('forecastResult').innerHTML = '';
     document.getElementById('extraInfo').innerHTML = '';
@@ -224,6 +228,9 @@ function fetchWeather(query) {
             }
 
             if (data.location && data.current) {
+                // Show results
+                document.getElementById('resultsSection').style.display = 'flex'; // or block, but flex is defined in CSS
+                
                 // Store current data
                 currentWeatherData = data;
                 
@@ -236,11 +243,12 @@ function fetchWeather(query) {
             }
         })
         .catch(error => {
-            // Hide loading
+            // Hide loading, show welcome state again
             document.getElementById('loading').style.display = 'none';
+            document.getElementById('welcomeState').style.display = 'block';
+            
             console.error(error);
-            document.getElementById('weatherResult').innerHTML = `<p>Lỗi: ${error.message || 'Không thể tải dữ liệu'}</p>`;
-            showToast('Lỗi mạng hoặc API!', 'error');
+            showToast(`Lỗi: ${error.message || 'Không thể tải dữ liệu'}`, 'error');
         });
 }
 
