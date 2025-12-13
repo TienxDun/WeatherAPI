@@ -122,18 +122,30 @@ function updateWeatherDisplay(data) {
     if (data.current.air_quality) {
         const aqi = data.current.air_quality['us-epa-index'];
         let aqiText = 'Tốt';
-        if (aqi > 1) aqiText = 'Trung bình';
-        if (aqi > 2) aqiText = 'Kém';
-        if (aqi > 3) aqiText = 'Xấu';
-        if (aqi > 4) aqiText = 'Rất xấu';
-        if (aqi > 5) aqiText = 'Nguy hại';
+        let aqiColor = '#4caf50'; // Green
+        if (aqi > 1) { aqiText = 'Trung bình'; aqiColor = '#ffeb3b'; } // Yellow
+        if (aqi > 2) { aqiText = 'Kém'; aqiColor = '#ff9800'; } // Orange
+        if (aqi > 3) { aqiText = 'Xấu'; aqiColor = '#f44336'; } // Red
+        if (aqi > 4) { aqiText = 'Rất xấu'; aqiColor = '#9c27b0'; } // Purple
+        if (aqi > 5) { aqiText = 'Nguy hại'; aqiColor = '#795548'; } // Brown
         
         extraInfoHTML += `
             <div class="info-card">
-                <h4>Chất lượng không khí</h4>
-                <p>Chỉ số EPA: ${aqi}</p>
-                <p>Đánh giá: ${aqiText}</p>
-                <p>PM2.5: ${data.current.air_quality.pm2_5.toFixed(1)}</p>
+                <div class="info-header">
+                    <span class="info-icon">😷</span>
+                    <h4>Chất lượng không khí</h4>
+                </div>
+                <div class="info-body">
+                    <div class="aqi-badge" style="background-color: ${aqiColor}">${aqi} - ${aqiText}</div>
+                    <div class="info-row">
+                        <span class="label">PM2.5</span>
+                        <span class="value">${data.current.air_quality.pm2_5.toFixed(1)}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">PM10</span>
+                        <span class="value">${data.current.air_quality.pm10.toFixed(1)}</span>
+                    </div>
+                </div>
             </div>
         `;
     }
@@ -141,22 +153,76 @@ function updateWeatherDisplay(data) {
     // Astronomy (from first forecast day)
     if (data.forecast && data.forecast.forecastday && data.forecast.forecastday.length > 0) {
         const astro = data.forecast.forecastday[0].astro;
+        
+        // Translate Moon Phase
+        const moonPhases = {
+            'New Moon': 'Trăng non',
+            'Waxing Crescent': 'Trăng lưỡi liềm đầu tháng',
+            'First Quarter': 'Trăng bán nguyệt đầu tháng',
+            'Waxing Gibbous': 'Trăng khuyết đầu tháng',
+            'Full Moon': 'Trăng tròn',
+            'Waning Gibbous': 'Trăng khuyết cuối tháng',
+            'Last Quarter': 'Trăng bán nguyệt cuối tháng',
+            'Waning Crescent': 'Trăng lưỡi liềm cuối tháng'
+        };
+        const moonPhaseVi = moonPhases[astro.moon_phase] || astro.moon_phase;
+
         extraInfoHTML += `
             <div class="info-card">
-                <h4>Thiên văn</h4>
-                <p>🌅 Bình minh: ${astro.sunrise}</p>
-                <p>🌇 Hoàng hôn: ${astro.sunset}</p>
-                <p>🌑 Mặt trăng: ${astro.moon_phase}</p>
+                <div class="info-header">
+                    <span class="info-icon">🌓</span>
+                    <h4>Thiên văn</h4>
+                </div>
+                <div class="info-body">
+                    <div class="astro-grid">
+                        <div class="astro-item">
+                            <span class="astro-icon">🌅</span>
+                            <div class="astro-text">
+                                <span class="astro-label">Bình minh</span>
+                                <span class="astro-value">${astro.sunrise}</span>
+                            </div>
+                        </div>
+                        <div class="astro-item">
+                            <span class="astro-icon">🌇</span>
+                            <div class="astro-text">
+                                <span class="astro-label">Hoàng hôn</span>
+                                <span class="astro-value">${astro.sunset}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="moon-phase-row">
+                        <span class="label">🌑 Mặt trăng</span>
+                        <span class="value">${moonPhaseVi}</span>
+                    </div>
+                </div>
             </div>
         `;
     }
 
     // UV Index
+    const uv = data.current.uv;
+    const uvPercent = Math.min((uv / 11) * 100, 100);
+    let uvText = 'Thấp';
+    if (uv > 2) uvText = 'Trung bình';
+    if (uv > 5) uvText = 'Cao';
+    if (uv > 7) uvText = 'Rất cao';
+    if (uv > 10) uvText = 'Cực cao';
+
     extraInfoHTML += `
         <div class="info-card">
-            <h4>Chỉ số UV</h4>
-            <p>${data.current.uv}</p>
-            <p>${data.current.uv > 5 ? 'Cao - Cần bảo vệ' : 'Thấp/Trung bình'}</p>
+            <div class="info-header">
+                <span class="info-icon">☀️</span>
+                <h4>Chỉ số UV</h4>
+            </div>
+            <div class="info-body">
+                <div class="uv-display">
+                    <span class="uv-value">${uv}</span>
+                    <span class="uv-text">${uvText}</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${uvPercent}%"></div>
+                </div>
+            </div>
         </div>
     `;
 

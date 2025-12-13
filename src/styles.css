@@ -561,33 +561,168 @@ body.light {
 /* Extra Info Grid */
 .extra-info-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
 }
 
 .info-card {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 15px;
+    padding: 20px;
     border-radius: 15px;
-    text-align: center;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    gap: 15px;
+    transition: transform 0.3s ease;
+    overflow: hidden; /* Prevent content from spilling out */
+}
+
+.info-card:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.info-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 8px;
+    margin-bottom: 5px;
+}
+
+.info-icon {
+    font-size: 1.2rem;
 }
 
 .info-card h4 {
-    margin: 0 0 5px 0;
-    font-size: 0.9rem;
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
 }
 
-.info-card p {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 600;
+.info-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.info-row .label {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.info-row .value {
     color: rgba(255, 255, 255, 1);
+    font-weight: 500;
+}
+
+/* AQI Badge */
+.aqi-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    color: rgba(0, 0, 0, 0.8);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+/* UV Display */
+.uv-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 5px;
+}
+
+.uv-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+}
+
+.uv-text {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4caf50, #ffeb3b, #f44336);
+    border-radius: 3px;
+    transition: width 1s ease-out;
+}
+
+/* Astronomy Styles */
+.astro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.astro-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px;
+    border-radius: 10px;
+}
+
+.astro-icon {
+    font-size: 1.5rem;
+}
+
+.astro-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.astro-label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.astro-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: white;
+}
+
+.moon-phase-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.9rem;
+}
+
+.moon-phase-row .label {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.moon-phase-row .value {
+    font-weight: 500;
+    color: #e0e0e0;
 }
 
 /* Alerts */
@@ -671,5 +806,95 @@ body.light {
 
     .weather-card, .forecast-card {
         padding: 20px;
+    }
+}
+
+/* Mobile specific adjustments (~420px) */
+@media (max-width: 480px) {
+    .glass-container {
+        width: 100%;
+        border-radius: 0;
+        border: none;
+        padding: 15px;
+    }
+
+    .extra-info-grid {
+        grid-template-columns: 1fr; /* Stack vertically on small screens for better readability */
+        gap: 10px;
+    }
+
+    .info-card {
+        flex-direction: row; /* Horizontal layout for stacked cards */
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 15px;
+    }
+
+    .info-header {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+        width: 40%;
+    }
+
+    .info-body {
+        width: 60%;
+        align-items: flex-end;
+    }
+
+    .info-row {
+        width: 100%;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+    
+    /* Special handling for UV card on mobile */
+    .info-card:has(.uv-display) {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .info-card:has(.uv-display) .info-header {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .info-card:has(.uv-display) .info-body {
+        width: 100%;
+    }
+
+    /* Special handling for AQI card on mobile */
+    .info-card:has(.aqi-badge) {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .info-card:has(.aqi-badge) .info-header {
+        width: 100%;
+        margin-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 5px;
+    }
+
+    .info-card:has(.aqi-badge) .info-body {
+        width: 100%;
+        align-items: stretch;
+    }
+
+    /* Special handling for Astronomy card on mobile */
+    .info-card:has(.astro-grid) {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .info-card:has(.astro-grid) .info-header {
+        width: 100%;
+        margin-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 5px;
+    }
+
+    .info-card:has(.astro-grid) .info-body {
+        width: 100%;
     }
 }
