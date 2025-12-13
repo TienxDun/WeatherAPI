@@ -5,11 +5,13 @@ Một ứng dụng web thời tiết hiện đại với giao diện glassmorphi
 ## ✨ Tính năng
 
 - **Thời tiết hiện tại**: Hiển thị nhiệt độ, điều kiện thời tiết, độ ẩm, tốc độ gió, v.v.
-- **Dự báo 7 ngày**: Xem dự báo thời tiết cho tuần tới.
+- **Thông tin chi tiết**: Chất lượng không khí (AQI), chỉ số UV, thông tin thiên văn (bình minh, hoàng hôn, pha mặt trăng).
+- **Cảnh báo thời tiết**: Hiển thị các cảnh báo thời tiết khắc nghiệt nếu có.
+- **Dự báo 3 ngày**: Xem dự báo thời tiết chi tiết cho 3 ngày tới.
 - **Định vị tự động**: Lấy thời tiết tại vị trí hiện tại của bạn.
 - **Chuyển đổi đơn vị**: Chuyển đổi giữa °C và °F.
 - **Lịch sử tìm kiếm**: Lưu trữ và truy cập nhanh các thành phố đã tìm.
-- **Chọn chủ đề**: 8 chủ đề màu sắc đẹp mắt với hiệu ứng glassmorphism.
+- **Chọn chủ đề**: 4 chủ đề màu sắc đẹp mắt với hiệu ứng glassmorphism.
 - **Giao diện responsive**: Tương thích với desktop và mobile.
 - **Nhấn Enter để tìm**: Tìm kiếm nhanh bằng phím Enter.
 
@@ -73,7 +75,7 @@ Một ứng dụng web thời tiết hiện đại với giao diện glassmorphi
 ## 📝 API
 
 Ứng dụng sử dụng [WeatherAPI](https://www.weatherapi.com/) với endpoint:
-- `http://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={city}&days=7&aqi=no&alerts=no`
+- `http://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={city}&days=7&aqi=yes&alerts=yes&lang=vi`
 
 ## 🤝 Đóng góp
 
