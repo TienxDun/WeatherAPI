@@ -49,18 +49,39 @@ function showToast(message, type = 'success') {
 }
 
 // Load theme from localStorage
-let currentTheme = localStorage.getItem('weatherTheme') || 'green';
+let currentTheme = localStorage.getItem('weatherTheme') || 'dark';
+
+// Apply theme with transition
+document.body.style.transition = 'background 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
 document.body.className = currentTheme;
 
 // Update active radio button
-document.querySelector(`input[name="theme"][value="${currentTheme}"]`).checked = true;
+const themeRadio = document.querySelector(`input[name="theme"][value="${currentTheme}"]`);
+if (themeRadio) themeRadio.checked = true;
 
 // Theme radio listeners
 document.querySelectorAll('input[name="theme"]').forEach(radio => {
     radio.addEventListener('change', () => {
         const theme = radio.value;
+        
+        // Add transition class for smooth color change
+        document.body.style.transition = 'background 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
         document.body.className = theme;
+        
+        // Save to localStorage
         localStorage.setItem('weatherTheme', theme);
+        
+        // Show toast notification
+        const themeNames = {
+            'blue': 'Xanh biển',
+            'pink': 'Hồng đào',
+            'green': 'Xanh ngọc',
+            'dark': 'Tối mịn'
+        };
+        showToast(`Đã chuyển sang chủ đề ${themeNames[theme]}`, 'success');
+        
+        // Update current theme
+        currentTheme = theme;
     });
 });
 

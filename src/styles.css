@@ -336,75 +336,204 @@ input:checked + .slider:before {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 15px;
-    padding: 20px;
+    border-radius: 20px;
+    padding: 25px 20px;
     text-align: center;
+    transition: all 0.3s ease;
+}
+
+.theme-section:hover, .history-section:hover {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .theme-section h4, .history-section h4 {
-    margin: 0 0 15px 0;
+    margin: 0 0 20px 0;
     font-size: 1.1rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
+/* Theme Selector - Improved */
 .theme-selector {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
+    gap: 12px;
     justify-items: center;
 }
 
-.theme-selector input[type="radio"] {
-    display: none;
+.theme-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.theme-item input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
 }
 
 .theme-option {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    border: 3px solid transparent;
-    display: inline-block;
+    padding: 8px;
+    border-radius: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .theme-option:hover {
-    transform: scale(1.1) rotate(5deg);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2),
-                0 0 20px rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
 }
 
-.theme-selector input[type="radio"]:checked + .theme-option {
-    border-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5),
-                0 4px 12px rgba(0, 0, 0, 0.3),
+/* Theme Color Circle */
+.theme-color {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.theme-color::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 50%);
+    border-radius: 50%;
+}
+
+.theme-option:hover .theme-color {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25),
                 0 0 30px rgba(255, 255, 255, 0.3);
-    animation: selectedPulse 0.6s ease-out;
 }
 
-@keyframes selectedPulse {
+/* Theme Name */
+.theme-name {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+    transition: all 0.3s ease;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.theme-option:hover .theme-name {
+    color: rgba(255, 255, 255, 1);
+    transform: translateY(-1px);
+}
+
+/* Check Mark */
+.theme-check {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #333;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+}
+
+/* Selected State */
+.theme-item input[type="radio"]:checked + .theme-option {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+}
+
+.theme-item input[type="radio"]:checked + .theme-option .theme-color {
+    border-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.3),
+                0 8px 25px rgba(0, 0, 0, 0.3),
+                0 0 40px rgba(255, 255, 255, 0.4);
+    animation: themeSelected 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.theme-item input[type="radio"]:checked + .theme-option .theme-name {
+    color: white;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.theme-item input[type="radio"]:checked + .theme-option .theme-check {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Animation for selection */
+@keyframes themeSelected {
     0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
+    40% { transform: scale(1.2); }
+    70% { transform: scale(0.95); }
     100% { transform: scale(1); }
 }
 
-.theme-option[data-theme="blue"] {
+/* Theme Gradients */
+.theme-option[data-theme="blue"] .theme-color {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-.theme-option[data-theme="pink"] {
+.theme-option[data-theme="pink"] .theme-color {
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 }
 
-.theme-option[data-theme="green"] {
+.theme-option[data-theme="green"] .theme-color {
     background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
 }
 
-.theme-option[data-theme="dark"] {
+.theme-option[data-theme="dark"] .theme-color {
     background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+
+/* Ripple Effect */
+.theme-option::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.theme-item input[type="radio"]:checked + .theme-option::before {
+    width: 120px;
+    height: 120px;
+    opacity: 0;
+}
+
+/* Active state */
+.theme-option:active {
+    transform: scale(0.95);
 }
 
 .history {
@@ -802,6 +931,29 @@ body.light {
     .sidebar-section {
         grid-template-columns: 1fr;
         gap: 20px;
+    }
+
+    .theme-selector {
+        gap: 8px;
+    }
+
+    .theme-option {
+        padding: 6px;
+    }
+
+    .theme-color {
+        width: 38px;
+        height: 38px;
+    }
+
+    .theme-name {
+        font-size: 0.7rem;
+    }
+
+    .theme-check {
+        width: 16px;
+        height: 16px;
+        font-size: 9px;
     }
 
     .forecast-container {
